@@ -14,7 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.net.URL;
 import java.util.List;
 
-public class FirstTest {
+public class FirstTest<find_title> {
 
     private AppiumDriver driver;
 
@@ -304,13 +304,9 @@ public class FirstTest {
                 5
         );
 
-        int find_title = assertElementPresent(
-                By.id("org.wikipedia:id/view_page_title_text")
-        );
-
-        Assert.assertTrue(
-                "Cannot find title",
-                find_title > 0
+        assertElementPresent(
+                By.id("org.wikipedia:id/view_page_title_text"),
+                "Cannot find title"
         );
 
     }
@@ -358,9 +354,9 @@ public class FirstTest {
     protected void swipeElementToLeft(By by, String error_message)
     {
         WebElement element = waitForElementPresent(
-            by,
-            error_message,
-            10
+                by,
+                error_message,
+                10
         );
 
         int left_x = element.getLocation().getX();
@@ -377,11 +373,20 @@ public class FirstTest {
                 .release()
                 .perform();
     }
-    
-    private int assertElementPresent(By by)
+
+    private int getAmountOfElement(By by)
     {
-        List element = driver.findElements(by);
-        return element.size();
+        List elements = driver.findElements(by);
+        return elements.size();
     }
+
+    private void assertElementPresent(By by, String error_message)
+    {
+        int amount_of_elements = getAmountOfElement(by);
+        if (amount_of_elements == 0) {
+            throw new AssertionError(error_message);
+        }
+    }
+
 
 }
